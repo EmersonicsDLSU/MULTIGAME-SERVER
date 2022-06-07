@@ -387,6 +387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 3004460351258494861, guid: 074b310c22f042649a93c0c82198cecb, type: 3}
+  projectilePrefab: {fileID: 8225141950949864321, guid: 27187b9634576b147b5df18bc5338aef, type: 3}
 --- !u!114 &1656450155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -443,6 +444,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa06a70153f0084d89672ea488df3dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnerId: 0
+  hasItem: 0
 --- !u!65 &2055889584
 BoxCollider:
   m_ObjectHideFlags: 0

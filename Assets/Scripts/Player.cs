@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public float gravity = -9.81f;
     public float moveSpeed = 5f;
     public float jumpSpeed = 5f;
+    public float throwForce = 600f;
     public float health;
     public float maxHealth = 100f;
     public int itemAmount = 0;
@@ -98,8 +99,13 @@ public class Player : MonoBehaviour
     {
         inputs = _inputs;
         transform.rotation = _rotation;
-    }public void Shoot(Vector3 _viewDirection)
+    }
+    public void Shoot(Vector3 _viewDirection)
     {
+        if (health <= 0f)
+        {
+            return;
+        }
         // cast a ray and see it hits a player; distance of the bullet 25ft
         if (Physics.Raycast(shootOrigin.position, _viewDirection, out RaycastHit _hit, 25f))
         {
@@ -107,6 +113,20 @@ public class Player : MonoBehaviour
             {
                 _hit.collider.GetComponent<Player>().TakeDamage(50f);
             }
+        }
+    }
+    
+    public void ThrowItem(Vector3 _viewDirection)
+    {
+        if (health <= 0f)
+        {
+            return;
+        }
+
+        if (itemAmount > 0)
+        {
+            itemAmount--;
+            NetworkManager.instance.InstantiateProjectile(shootOrigin).Initialize(_viewDirection, throwForce, id);
         }
     }
 
