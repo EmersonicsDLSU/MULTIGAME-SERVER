@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class Client
 {
+    // 4 megabytes(mb)
     public static int dataBufferSize = 4096;
 
     public int id;
@@ -14,6 +15,7 @@ public class Client
     public TCP tcp;
     public UDP udp;
 
+    // Client class' constructor to assign ID and initialize tcp/udp reference
     public Client(int _clientId)
     {
         id = _clientId;
@@ -23,13 +25,14 @@ public class Client
 
     public class TCP
     {
+        // stores the instance that we get in the server's connectCallback
         public TcpClient socket;
-
+        // this is the client's ID
         private readonly int id;
         private NetworkStream stream;
         private Packet receivedData;
         private byte[] receiveBuffer;
-
+        // constructor to assigns the id
         public TCP(int _id)
         {
             id = _id;
@@ -39,7 +42,9 @@ public class Client
         /// <param name="_socket">The TcpClient instance of the newly connected client.</param>
         public void Connect(TcpClient _socket)
         {
+            // assigns the tcp client that's passed in to the socket field
             socket = _socket;
+            // assigns the default buffersize to the send/receive buffer sizes
             socket.ReceiveBufferSize = dataBufferSize;
             socket.SendBufferSize = dataBufferSize;
 
@@ -75,17 +80,21 @@ public class Client
         {
             try
             {
+                // returns an int representing the number of bytes we read from the stream
                 int _byteLength = stream.EndRead(_result);
+                // if no bytes were received
                 if (_byteLength <= 0)
                 {
                     Server.clients[id].Disconnect();
                     return;
                 }
-
+                // if has a received, create a data with its byteLength
                 byte[] _data = new byte[_byteLength];
+                // pass the receivedBytes to the receiveBuffer
                 Array.Copy(receiveBuffer, _data, _byteLength);
-
-                receivedData.Reset(HandleData(_data)); // Reset receivedData if all data was handled
+                // Reset receivedData if all data was handled
+                receivedData.Reset(HandleData(_data));
+                //  continue reading data from the stream
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
             catch (Exception _ex)
