@@ -112,6 +112,9 @@ public class ServerSend
         {
             _packet.Write(_player.id);
             _packet.Write(_player.transform.position);
+            _packet.Write(_player.isWalking);
+            _packet.Write(_player.isJumping);
+            _packet.Write(_player.isGround);
 
             SendUDPDataToAll(_packet);
         }
@@ -232,6 +235,17 @@ public class ServerSend
         {
             _packet.Write(_projectile.id);
             _packet.Write(_projectile.transform.position);
+
+            SendTCPDataToAll(_packet);
+        }
+    }
+
+    public static void UpdateGameManager(float _timeTick, float _maxTime)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.updateGameManager))
+        {
+            _packet.Write(_timeTick);
+            _packet.Write(_maxTime);
 
             SendTCPDataToAll(_packet);
         }

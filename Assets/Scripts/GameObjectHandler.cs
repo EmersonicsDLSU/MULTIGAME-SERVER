@@ -19,5 +19,7 @@ public class GameObjectHandler : MonoBehaviour
         }
     }
 
+
+
     public List<GameObject> playerSpawns;
 }

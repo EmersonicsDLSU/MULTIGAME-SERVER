@@ -265,6 +265,10 @@ public class Client
         tcp.Disconnect();
         udp.Disconnect();
 
+        // remove the disconnected player from the 'playerList'
+        NetworkManager.instance.playerList.Remove(
+            NetworkManager.instance.playerList.Find(x => x.id == id)
+        );
         ServerSend.PlayerDisconnected(id);
     }
 }

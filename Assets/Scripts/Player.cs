@@ -18,6 +18,12 @@ public class Player : MonoBehaviour
     public int maxItemAmount = 3;
     public int killCount = 0;
     [HideInInspector] public PlayerColors player_color;
+    [HideInInspector] public bool isWalking = false;
+    [HideInInspector] public bool isJumping = false;
+    [HideInInspector] public bool isGround = false;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRad = 0.4f;
+    [SerializeField] private LayerMask groundLayer;
 
     private bool[] inputs;
     private float yVelocity = 0;
@@ -34,6 +40,8 @@ public class Player : MonoBehaviour
         id = _id;
         username = _username;
         health = maxHealth;
+        // assigns this 'Player' reference to the list
+        NetworkManager.instance.playerList.Add(this);
         // initialize movements
         inputs = new bool[5];
         // randomnly select color
@@ -43,6 +51,12 @@ public class Player : MonoBehaviour
     /// <summary>Processes player input and moves the player.</summary>
     public void FixedUpdate()
     {
+        
+        //Checks if the player is on the ground; checks both feet(left and right)
+        isGround = 
+            Physics.CheckSphere(groundCheck.position, groundCheckRad, groundLayer) 
+                ? true : false;
+
         if (health <= 0f)
         {
             return;
@@ -65,6 +79,9 @@ public class Player : MonoBehaviour
         {
             _inputDirection.x += 1;
         }
+
+        isWalking = (inputs[0] || inputs[1] || inputs[2] || inputs[3]) ? true : false;
+        isJumping = (inputs[4]) ? true : false;
 
         Move(_inputDirection);
     }

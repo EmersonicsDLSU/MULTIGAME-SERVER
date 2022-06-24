@@ -10,8 +10,13 @@ public class NetworkManager : MonoBehaviour
 
     public GameObject playerPrefab;
     public GameObject projectilePrefab;
+    
+    // timer
+    [HideInInspector]public float _timeTick;
+    public float _maxTime = 60.0f;
 
     [HideInInspector] public List<PlayerColors> player_colors;
+    [HideInInspector] public List<Player> playerList;
 
     private void Awake()
     {
@@ -28,15 +33,34 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
-
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 30;
 
         Server.Start(50, 26950);
 
         ResetPlayerColorList();
+
+        playerList = new List<Player>();
+
+        _timeTick = _maxTime;
     }
-    
+
+    private void Update()
+    {
+        if (_timeTick > 0.0f && playerList.Count > 0)
+        {
+            // decrement timer
+            ServerSend.UpdateGameManager(_timeTick, _maxTime);
+            _timeTick -= Time.deltaTime;
+        }
+        else if (playerList.Count <= 0)
+        {
+            // reset timer
+            _timeTick = _maxTime;
+            ServerSend.UpdateGameManager(_timeTick, _maxTime);
+        }
+    }
+
     public PlayerColors PlayerSelectColor()
     {
         if (player_colors.Count == 0)
