@@ -13,6 +13,7 @@ public class Projectile : MonoBehaviour
     public Vector3 initialForce;
     public float explosionRadius = 1.5f;
     public float explosionDamage = 75f;
+    [HideInInspector] public Player shooter;
 
     private void Start()
     {
@@ -51,7 +52,7 @@ public class Projectile : MonoBehaviour
         {
             if (_collider.CompareTag("Player"))
             {
-                _collider.GetComponent<Player>().TakeDamage(explosionDamage);
+                _collider.GetComponent<Player>().TakeDamage(explosionDamage, shooter);
             }
         }
 

@@ -98,6 +98,7 @@ public class ServerSend
             _packet.Write(_player.username);
             _packet.Write(_player.transform.position);
             _packet.Write(_player.transform.rotation);
+            _packet.Write((int)_player.player_color);
 
             SendTCPData(_toClient, _packet);
         }
@@ -154,6 +155,16 @@ public class ServerSend
         using (Packet _packet = new Packet((int)ServerPackets.playerRespawned))
         {
             _packet.Write(_player.id);
+
+            SendTCPDataToAll(_packet);
+        }
+    }
+    public static void PlayerKillPoint(Player _player)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.playerKillPoint))
+        {
+            _packet.Write(_player.id);
+            _packet.Write(_player.killCount);
 
             SendTCPDataToAll(_packet);
         }

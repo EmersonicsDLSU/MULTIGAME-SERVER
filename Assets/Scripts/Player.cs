@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     public float maxHealth = 100f;
     public int itemAmount = 0;
     public int maxItemAmount = 3;
+    public int killCount = 0;
+    [HideInInspector] public PlayerColors player_color;
 
     private bool[] inputs;
     private float yVelocity = 0;
@@ -32,8 +34,10 @@ public class Player : MonoBehaviour
         id = _id;
         username = _username;
         health = maxHealth;
-
+        // initialize movements
         inputs = new bool[5];
+        // randomnly select color
+        player_color = NetworkManager.instance.PlayerSelectColor();
     }
 
     /// <summary>Processes player input and moves the player.</summary>
@@ -111,7 +115,7 @@ public class Player : MonoBehaviour
         {
             if (_hit.collider.CompareTag("Player"))
             {
-                _hit.collider.GetComponent<Player>().TakeDamage(50f);
+                _hit.collider.GetComponent<Player>().TakeDamage(50f, this);
             }
         }
     }
@@ -126,11 +130,13 @@ public class Player : MonoBehaviour
         if (itemAmount > 0)
         {
             itemAmount--;
-            NetworkManager.instance.InstantiateProjectile(shootOrigin).Initialize(_viewDirection, throwForce, id);
+            var projectile = NetworkManager.instance.InstantiateProjectile(shootOrigin);
+            projectile.Initialize(_viewDirection, throwForce, id);
+            projectile.shooter = this;
         }
     }
 
-    public void TakeDamage(float _damage)
+    public void TakeDamage(float _damage, Player _playerShooter)
     {
         if (health <= 0f)
         {
@@ -142,8 +148,14 @@ public class Player : MonoBehaviour
         {
             health = 0f;
             controller.enabled = false;
-            transform.position = new Vector3(0f, 25f, 0f);
+            // respawn back the player randomnly
+            int rand = Random.Range(0, GameObjectHandler.instance.playerSpawns.Count);
+            transform.position = GameObjectHandler.instance.playerSpawns[rand].transform.position;
             ServerSend.PlayerPosition(this);
+            // increment kill count to the killer
+            _playerShooter.killCount++;
+            ServerSend.PlayerKillPoint(_playerShooter);
+
             StartCoroutine(Respawn());
         }
 
