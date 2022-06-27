@@ -13,6 +13,7 @@ public class NetworkManager : MonoBehaviour
     
     // timer
     [HideInInspector]public float _timeTick;
+    [HideInInspector]public bool _isGameFinished;
     public float _maxTime = 60.0f;
 
     [HideInInspector] public List<PlayerColors> player_colors;
@@ -47,17 +48,19 @@ public class NetworkManager : MonoBehaviour
 
     private void Update()
     {
-        if (_timeTick > 0.0f && playerList.Count > 0)
+        if (_timeTick > 0.0f && playerList.Count > 0 && !_isGameFinished)
         {
             // decrement timer
-            ServerSend.UpdateGameManager(_timeTick, _maxTime);
+            _isGameFinished = false;
+            ServerSend.UpdateGameManager(_timeTick, _maxTime, _isGameFinished);
             _timeTick -= Time.deltaTime;
         }
-        else if (playerList.Count <= 0)
+        else if (_timeTick <= 0 && playerList.Count > 0 && !_isGameFinished)
         {
             // reset timer
             _timeTick = _maxTime;
-            ServerSend.UpdateGameManager(_timeTick, _maxTime);
+            _isGameFinished = true;
+            ServerSend.UpdateGameManager(_timeTick, _maxTime, _isGameFinished);
         }
     }
 
@@ -99,5 +102,33 @@ public class NetworkManager : MonoBehaviour
     public Projectile InstantiateProjectile(Transform _shootOrigin)
     {
         return Instantiate(projectilePrefab, _shootOrigin.position + _shootOrigin.forward * 0.7f, Quaternion.identity).GetComponent<Projectile>();
+    }
+
+    public void CheckResetGame()
+    {
+        for (int i = 0; i < playerList.Count; i++)
+        {
+            // if other player is not ready
+            if (!playerList[i].willPlayAgain)
+                return;
+        }
+        // if all are ready
+        for (int i = 0; i < playerList.Count; i++)
+        {
+            // reset properties
+            playerList[i].willPlayAgain = false;
+            // respawn back the player randomnly
+            int rand = Random.Range(0, GameObjectHandler.instance.playerSpawns.Count);
+            playerList[i].transform.position = 
+                GameObjectHandler.instance.playerSpawns[rand].transform.position;
+            ServerSend.PlayerPosition(playerList[i]);
+            playerList[i].health = playerList[i].maxHealth;
+            playerList[i].itemAmount = 0;
+            playerList[i].controller.enabled = true;
+            ServerSend.PlayerRespawned(playerList[i]);
+        }
+        
+        _isGameFinished = false;
+        ServerSend.ResetGame(_isGameFinished);
     }
 }

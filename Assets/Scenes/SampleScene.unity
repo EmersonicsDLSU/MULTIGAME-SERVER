@@ -2830,7 +2830,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 3004460351258494861, guid: 074b310c22f042649a93c0c82198cecb, type: 3}
   projectilePrefab: {fileID: 8225141950949864321, guid: 27187b9634576b147b5df18bc5338aef, type: 3}
+  _timeTick: 0
+  _isGameFinished: 0
+  _maxTime: 5
   player_colors: 
+  playerList: []
 --- !u!114 &1656450155
 MonoBehaviour:
   m_ObjectHideFlags: 0

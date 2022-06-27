@@ -25,6 +25,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float groundCheckRad = 0.4f;
     [SerializeField] private LayerMask groundLayer;
 
+    [HideInInspector] public bool willPlayAgain = false;
+
     private bool[] inputs;
     private float yVelocity = 0;
 
@@ -155,11 +157,16 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(float _damage, Player _playerShooter)
     {
+        // if player taking damage has no more health
         if (health <= 0f)
         {
             return;
         }
-
+        // if there's a friendly and self-fire
+        if (id == _playerShooter.id)
+        {
+            return;
+        }
         health -= _damage;
         if (health <= 0f)
         {

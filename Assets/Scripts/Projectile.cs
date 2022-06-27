@@ -55,7 +55,7 @@ public class Projectile : MonoBehaviour
                 _collider.GetComponent<Player>().TakeDamage(explosionDamage, shooter);
             }
         }
-
+        StopCoroutine("ExplodeAfterTime");
         projectiles.Remove(id);
         Destroy(gameObject);
     }

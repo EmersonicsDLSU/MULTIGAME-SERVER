@@ -41,5 +41,14 @@ public class ServerHandle
 
         Server.clients[_fromClient].player.ThrowItem(_throwDirection);
     }
+    public static void PlayAgain(int _fromClient, Packet _packet)
+    {
+        int _clientIdCheck = _packet.ReadInt();
+        if (_clientIdCheck == _fromClient)
+        {
+            Server.clients[_fromClient].player.willPlayAgain = true;
+            NetworkManager.instance.CheckResetGame();
+        }
+    }
 
 }

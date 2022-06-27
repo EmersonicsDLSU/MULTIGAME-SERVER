@@ -240,12 +240,22 @@ public class ServerSend
         }
     }
 
-    public static void UpdateGameManager(float _timeTick, float _maxTime)
+    public static void UpdateGameManager(float _timeTick, float _maxTime, bool _isGameFinished)
     {
         using (Packet _packet = new Packet((int)ServerPackets.updateGameManager))
         {
             _packet.Write(_timeTick);
             _packet.Write(_maxTime);
+            _packet.Write(_isGameFinished);
+
+            SendTCPDataToAll(_packet);
+        }
+    }
+    public static void ResetGame(bool _isGameFinished)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.resetGame))
+        {
+            _packet.Write(_isGameFinished);
 
             SendTCPDataToAll(_packet);
         }

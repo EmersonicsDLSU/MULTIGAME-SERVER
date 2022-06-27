@@ -32,7 +32,8 @@ public enum ServerPackets
     projectilePosition,
     projectileExploded,
     playerKillPoint,
-    updateGameManager
+    updateGameManager,
+    resetGame
 }
 
 /// <summary>Sent from client to server.</summary>
@@ -41,7 +42,8 @@ public enum ClientPackets
     welcomeReceived = 1,
     playerMovement,
     playerShoot,
-    playerThrowItem
+    playerThrowItem,
+    playAgain
 }
 
 public class Packet : IDisposable
