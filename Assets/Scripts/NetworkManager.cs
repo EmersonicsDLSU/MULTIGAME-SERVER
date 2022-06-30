@@ -48,6 +48,7 @@ public class NetworkManager : MonoBehaviour
 
     private void Update()
     {
+        //Debug.LogError($"PlayerCount: {playerList.Count} : IsGameFinished: {_isGameFinished}");
         if (_timeTick > 0.0f && playerList.Count > 0 && !_isGameFinished)
         {
             // decrement timer
@@ -61,6 +62,11 @@ public class NetworkManager : MonoBehaviour
             _timeTick = _maxTime;
             _isGameFinished = true;
             ServerSend.UpdateGameManager(_timeTick, _maxTime, _isGameFinished);
+        }
+        // if there are no more player in the server
+        if (playerList.Count <= 0)
+        {
+            _isGameFinished = false;
         }
     }
 
