@@ -248,7 +248,7 @@ public class ServerSend
             _packet.Write(_maxTime);
             _packet.Write(_isGameFinished);
 
-            SendTCPDataToAll(_packet);
+            SendUDPDataToAll(_packet);
         }
     }
     public static void ResetGame(bool _isGameFinished)
