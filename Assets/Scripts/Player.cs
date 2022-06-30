@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     public int itemAmount = 0;
     public int maxItemAmount = 3;
     public int killCount = 0;
+    [HideInInspector] public int spawnCount = 0;
     [HideInInspector] public PlayerColors player_color;
     [HideInInspector] public bool isWalking = false;
     [HideInInspector] public bool isJumping = false;

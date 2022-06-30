@@ -66,7 +66,9 @@ public class NetworkManager : MonoBehaviour
         // if there are no more player in the server
         if (playerList.Count <= 0)
         {
+            _timeTick = _maxTime;
             _isGameFinished = false;
+            ServerSend.UpdateGameManager(_timeTick, _maxTime, _isGameFinished);
         }
     }
 
@@ -130,6 +132,7 @@ public class NetworkManager : MonoBehaviour
             ServerSend.PlayerPosition(playerList[i]);
             playerList[i].health = playerList[i].maxHealth;
             playerList[i].itemAmount = 0;
+            playerList[i].killCount = 0;
             playerList[i].controller.enabled = true;
             ServerSend.PlayerRespawned(playerList[i]);
         }
@@ -137,4 +140,5 @@ public class NetworkManager : MonoBehaviour
         _isGameFinished = false;
         ServerSend.ResetGame(_isGameFinished);
     }
+    
 }
